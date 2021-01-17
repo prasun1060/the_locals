@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="row mb-2">
+        <div class="col-md-8 offset-md-2 card mt-4">
+            <form method='POST' class="form card-body" enctype="multipart/form-data">
+                <h5 class="card-title">Edit Product Form</h5>
+                <hr>
+                <div class="mb-3">
+                    <figure>
+                        <img src="{{url_for('product.get_product_image', image_name=product.product_image)}}" height="100px" alt="product.product_image">
+                    </figure>
+                    <a class="btn btn-secondary" href="{{url_for('product.edit_product_image', id=product.id)}}">Change Image</a>
+                </div>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.product_name.label(class_='form-label') }}
+                    {{ form.product_name(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.product_type.label(class_='form-label') }}
+                    {{ form.product_type(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.product_description.label(class_='form-label') }}
+                    {{ form.product_description(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.product_quantity.label(class_='form-label') }}
+                    {{ form.product_quantity(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.product_quantity_units.label(class_='form-label') }}
+                    {{ form.product_quantity_units(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.mrp.label(class_='form-label') }}
+                    <div class="input-group">
+                        <span class="input-group-text">&#8377;</span>
+                        {{ form.mrp(class_='form-control') }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form.discount.label(class_='form-label') }}
+                    <div class="input-group">
+                        {{ form.discount(class_='form-control') }}
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form.price.label(class_='form-label') }}
+                    <div class="input-group">
+                        <span class="input-group-text">&#8377;</span>
+                        {{ form.price(class_='form-control') }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form.availibility_in_no.label(class_='form-label') }}
+                    {{ form.availibility_in_no(class_='form-control', required='required') }}
+                </div>
+                {{ form.submit_btn(class_='btn btn-primary') }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

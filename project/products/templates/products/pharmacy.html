@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="row">
+        {% if products|length == 0 %}
+        <div class="col-md-12 card mt-4">
+            <div class="card-body">
+                <h5>Oops! Seems to be empty!</h5>
+            </div>
+        </div>
+        {% else %}
+        {% for product in products%}
+        <div class="col-md-3 mt-4">
+            <div class="card">
+                <img src="{{url_for('product.get_product_image', image_name=product.product_image)}}" height="250px"
+                    width="250px" class="card-img-top" alt="{{product.product_image}}">
+                <div class="card-body overflow-hidden">
+                    <h5 class="card-title text-nowrap">{{product.product_name}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        by {{product.business_owner.business_name}}
+                    </h6>
+                    <p class="card-text font-sm">
+                        {{product.product_quantity}} {{product.product_quantity_units}}
+                        <!-- {{product.zip}} -->
+                    </p>
+                    <p class="card-text font-sm">
+                        <span class="text-decoration-line-through text-muted">MRP: &#8377;{{product.mrp}} </span>
+                        ({{product.discount}}% off)
+                        <br />
+                        Price: &#8377;{{product.price}}
+                        <!-- {{product.zip}} -->
+                    </p>
+                    <div class="d-grid">
+                        <a href="{{url_for('product.view_product', id=product.id)}}" class="btn btn-primary">Visit
+                            Product</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

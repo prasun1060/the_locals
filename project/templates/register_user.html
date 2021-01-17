@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 card mt-4">
+
+            <form method='POST' class="form card-body">
+                <h5 class="card-title">Registration Form</h5>
+                <hr>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.user_role.label(class_='form-label') }}
+                    {{ form.user_role(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.phone_number.label(class_='form-label') }}
+                    {{ form.phone_number(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password.label(class_='form-label') }}
+                    {{ form.password(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password_match.label(class_='form-label') }}
+                    {{ form.password_match(class_='form-control', required='required') }}
+                    {% for field, errors in form.errors.items() %}
+                        <small class="form-text text-muted ">
+                            {{ ', '.join(errors) }}
+                        </small>
+                    {% endfor %}
+                </div>
+                {{ form.submit_btn(class_='btn btn-primary') }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

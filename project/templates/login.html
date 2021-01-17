@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 card mt-4">
+
+            <form method='POST' class="form card-body">
+                <h5 class="card-title">Login Form</h5>
+                <hr>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.phone_number.label(class_='form-label') }}
+                    {{ form.phone_number(class_='form-control', required='required') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password.label(class_='form-label') }}
+                    {{ form.password(class_='form-control', required='required') }}
+                </div>
+                {{ form.submit_btn(class_='btn btn-primary') }}
+                <div id="registrationText" class="form-text">If you donot have account. Register <a href='{{ url_for("register_user") }}'>here</a>.</div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container pb-5">
+    <div class="row mt-4 p-4">
+        {% set total_charges = namespace(total=0) %}
+        {% for order in orders %}
+        {% set total_charges.total = (total_charges.total + (order.order_quantity * order.product.price)) %}
+        <div class="col-12 border p-2 mb-4">
+            <div class="row">
+                <div class="col-md-2 col-lg-1 my-auto">
+                    <figure class="overflow-hidden">
+                        <img src="{{url_for('product.get_product_image', image_name=order.product.product_image)}}"
+                            height="80px" alt="">
+                    </figure>
+                </div>
+                <div class="col-md-8 col-lg-10 mw-5 my-auto">
+                    <a class="text-decoration-none link-text" href="{{url_for('product.view_product', id=order.product.id)}}">
+                        <h6>{{order.product.product_name}}</h6>
+                    </a>
+                    <p>
+                        Order Quantity: {{order.order_quantity}}<br />
+                        Total Charge: &#8377; {{order.order_quantity * order.product.price}}
+                    </p>
+                </div>
+                <div class="col-md-2 col-lg-1 my-auto">
+                    <a class="btn" href="{{url_for('orders.delete_order', order_id=order.id)}}">
+                        <i class="bi bi-trash-fill" style="font-size: 24px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="container-fluid mt-5">
+    <div class="row shadow fixed-bottom p-4 bg-white">
+        <div class="col-6">
+            <h6>Total Charges:</h6>
+            <p>
+                &#8377; {{ total_charges.total }}
+            </p>
+        </div>
+        <div class="col-6 text-end">
+            <a class="mw-auto btn btn-primary" href="#">Confirm Order</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

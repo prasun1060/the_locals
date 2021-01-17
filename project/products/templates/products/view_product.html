@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <figure class="overflow-hidden p-auto text-center" style="height: 400px; width: 500px;">
+                <img class="m-auto" src="{{ url_for('product.get_product_image', image_name=product.product_image) }}"
+                    alt="{{product.product_image}}">
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <h1>{{product.product_name}}</h1>
+            <h6 class="card-subtitle mb-2 text-muted">
+                by {{product.business_owner.business_name}}
+            </h6>
+            <a class='link-text' href="#">Visit {{product.business_owner.business_name}}</a>
+            <hr>
+            <p>
+                Quantity: {{product.product_quantity}} {{product.product_quantity_units}}
+                <br>
+                MRP: <span class="text-decoration-line-through text-muted">&#8377; {{product.mrp}}</span>
+                ({{product.discount}}% off)
+                <br>
+                Price: &#8377; {{product.price}}
+            </p>
+            {% if current_user.is_authenticated and current_user.user_role=='Business' %}
+            {% else %}
+            <form method='POST' action="{{url_for('orders.add_to_cart')}}">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <input type="number" name="order_quantity" class="mb-2" onKeyPress="if(this.value < 1 || this.value.length==5) return false;" value="1" min="1" required>
+                Unit
+                <br>
+                <input type="submit" class="btn btn-primary" value="Add to cart">
+            </form>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.phone_number==product.business_owner.phone_number %}
+            <a class="btn btn-primary" href="{{url_for('product.edit_product', id=product.id)}}">Edit Product</a>
+            <a class="btn btn-primary" href="{{url_for('product.delete_product', id=product.id)}}">Delete Product</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="true" href="#">Product Description</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{product.product_description}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

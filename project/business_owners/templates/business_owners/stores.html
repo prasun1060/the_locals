@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+  <div class="row mt-4">
+    {% for store in stores%}
+    <div class="col-md-3 mb-2">
+      <div class="card">
+        <img src="{{url_for('business.get_business_logo', logoname=store.business_logo)}}" height="250px" width="250px"
+          class="card-img-top" alt="{{store.business_logo}}">
+        <div class="card-body overflow-hidden">
+          <h5 class="card-title text-nowrap">{{store.business_name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            {% if store.business_category == 'Both' %}
+            Grocery and Pharmacy Stores
+            {% else %}
+            {{store.business_category}}
+            {% endif %}
+          </h6>
+          <p class="card-text">
+            {{store.phone_number}}
+          </p>
+          <p class="card-text text-muted font-sm">
+            {{store.address1}},
+            {{store.city}},
+            {{store.zip}}
+          </p>
+          <div class="d-grid">
+            <a href="#" class="btn btn-primary">Visit Store</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

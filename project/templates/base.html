@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <style src="{{ url_for('static', filename='base.css') }}" rel='stylesheet' type="text/css"></style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='icon.jpeg') }}">
+    <title>The Locals - Online Grocery and Pharmacy Store</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-light navbar-expand-lg shadow-sm fw-bold sticky-top" style="background-color: #d0d0d0;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='logo_blue.png')}}" alt="" width="110" height="50"
+                    class="d-inline-block align-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{url_for('product.all_groceries')}}">Grocery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('product.all_pharmacies')}}">Pharmacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('business.stores')}}">Stores</a>
+                    </li>
+                </ul>
+                {% if current_user.is_authenticated and current_user.user_role == 'Customer' %}
+                <a class="btn btn-outline-primary" role="button" href="{{url_for('orders.view_cart')}}">
+                    Cart <span class="badge bg-primary rounded-pill" id="cart-badge">0</span>
+                </a>
+                {% endif %}
+                <ul class="navbar-nav mb-2 mg-lg-0">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a class="nav-link active mr-4 dropdown-toggle" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false" aria-current="page" href="#">
+                                <i class="bi bi-person-circle" style="font-size: 24px;"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" id="nav-user-name" href="#">Hi,
+                                        {{current_user.phone_number}}</a></li>
+                                {% if current_user.user_role == 'Business' %}
+                                <li><a class="dropdown-item" href="{{url_for('product.add_product')}}">Add Product</a>
+                                </li>
+                                <li><a class="dropdown-item" href="{{url_for('product.my_products')}}">My Products</a>
+                                </li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link active mr-4" aria-current="page" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right" style="font-size: 24px;"></i>
+                        </a>
+                    </li> -->
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active mr-4" aria-current="page" href="{{ url_for('login') }}">
+                            <i class="bi bi-person-fill" style="font-size: 24px;"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <form class="d-flex" method="GET" action="{{url_for('search.search')}}">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+                    <button class="btn" type="submit"
+                        style="background-color: hsl(225, 90%, 16%); color:white">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block main_content %}
+    {% endblock %}
+
+    {% if current_user.is_authenticated %}
+    <script>
+        const nav_user_name = document.querySelector('#nav-user-name');
+
+        window.addEventListener("load", getAuthToken);
+        // window.addEventListener("load", loadUser);
+
+        function getAuthToken(e) {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "/auth", true);
+            xhr.setRequestHeader("Content-type", "application/json");
+
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    console.log('JWT ' + JSON.parse(this.responseText).access_token);
+                    sessionStorage.setItem('accessToken', 'JWT ' + JSON.parse(this.responseText).access_token);
+
+                    loadUser();
+                } else {
+                    console.log('fail');
+                }
+            };
+
+            xhr.send('{"username":"{{current_user.phone_number}}","password":"{{current_user.password}}"}');
+        };
+    </script>
+    {% if current_user.user_role == 'Customer'%}
+    <script>
+        const cart_count_badge = document.querySelector('#cart-badge');
+
+        function loadUser() {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open(method = 'GET',
+                url = '/api/user_details/{{current_user.phone_number}}',
+                async = true);
+
+            xhr.setRequestHeader("Authorization", sessionStorage.accessToken);
+
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    user = JSON.parse(this.responseText);
+                    console.log(user);
+                    console.log(user.first_name);
+                    nav_user_name.innerHTML = 'Hi, ' + user.first_name;
+                } else {
+                    console.log('fail');
+                }
+            };
+
+            xhr.send();
+
+            xhr.open(method = 'GET',
+                url = '/api/cart_count/{{current_user.phone_number}}',
+                async = true);
+
+            xhr.setRequestHeader("Authorization", sessionStorage.accessToken);
+
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    cart_count = JSON.parse(this.responseText).cart_count;
+                    cart_count_badge.innerHTML = cart_count;
+                } else {
+                    console.log('fail');
+                }
+            };
+
+            xhr.send();
+        };
+    </script>
+    {% else %}
+    <script>
+        function loadUser() {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open(method = 'GET',
+                url = '/api/user_details/{{current_user.phone_number}}',
+                async = true);
+
+            xhr.setRequestHeader("Authorization", sessionStorage.accessToken);
+
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    user = JSON.parse(this.responseText);
+                    console.log(user);
+                    console.log(user.business_name);
+                    nav_user_name.innerHTML = 'Hi, ' + user.business_name;
+                } else {
+                    console.log('fail');
+                }
+            };
+
+            xhr.send();
+        };
+    </script>
+    {% endif %}
+    {% endif %}
+</body>
+
+</html>

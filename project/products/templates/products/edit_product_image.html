@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="row mb-2">
+        <div class="col-md-8 offset-md-2 card mt-4">
+            <form method='POST' class="form card-body" enctype="multipart/form-data">
+                <h5 class="card-title">Edit Product Form</h5>
+                <hr>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.product_image.label(class_='form-label') }}
+                    {{ form.product_image(class_='form-control', required='required') }}
+                </div>
+                {{ form.submit_btn(class_='btn btn-primary') }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

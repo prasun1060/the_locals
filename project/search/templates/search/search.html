@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block main_content %}
+<div class="container">
+    <div class="accordion mt-4 mb-4">
+        <div class="accordion-item">
+            <h1 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseProduct"
+                    aria-expanded="false" aria-controls="collapseProduct">
+                    Products ({{products|length}})
+                </button>
+            </h1>
+            <div id="collapseProduct" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <div class="container">
+                        <div class="row">
+                            {% if products|length == 0 %}
+                            <div class="col-md-12 mt-4">
+                                <h5>No results found!</h5>
+                            </div>
+                            {% else %}
+                            {% for product in products%}
+                            <div class="col-md-3 mt-4 card">
+                                <img src="{{url_for('product.get_product_image', image_name=product.product_image)}}"
+                                    height="250px" width="250px" class="card-img-top" alt="{{product.product_image}}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{product.product_name}}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        by {{product.business_owner.business_name}}
+                                    </h6>
+                                    <p class="card-text font-sm">
+                                        {{product.product_quantity}} {{product.product_quantity_units}}
+                                        <!-- {{product.zip}} -->
+                                    </p>
+                                    <p class="card-text font-sm">
+                                        <span class="text-decoration-line-through text-muted">MRP:
+                                            &#8377;{{product.mrp}}
+                                        </span>
+                                        ({{product.discount}}% off)
+                                        <br />
+                                        Price: &#8377;{{product.price}}
+                                        <!-- {{product.zip}} -->
+                                    </p>
+                                    <div class="d-grid">
+                                        <a href="{{url_for('product.view_product', id=product.id)}}"
+                                            class="btn btn-primary">View Product</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseStore"
+                    aria-controls="collapseStore" aria-expanded="false">Stores ({{stores|length}})</button>
+            </h2>
+            <div id="collapseStore" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <div class="container">
+                        <div class="row mt-4">
+                            {% if stores|length == 0 %}
+                            <div class="col-md-12 mt-4">
+                                <h5>No results found!</h5>
+                            </div>
+                            {% else %}
+                            {% for store in stores %}
+                            <div class="col-md-3 m-2">
+                                <div class="card">
+                                    <img src="{{url_for('business.get_business_logo', logoname=store.business_logo)}}"
+                                        height="250px" width="250px" class="card-img-top" alt="{{store.business_logo}}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{store.business_name}}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            {% if store.business_category == 'Both' %}
+                                            Grocery and Pharmacy Stores
+                                            {% else %}
+                                            {{store.business_category}}
+                                            {% endif %}
+                                        </h6>
+                                        <p class="card-text">
+                                            {{store.phone_number}}
+                                        </p>
+                                        <p class="card-text text-muted font-sm">
+                                            {{store.address1}},
+                                            {{store.city}},
+                                            {{store.zip}}
+                                        </p>
+                                        <div class="d-grid">
+                                            <a href="#" class="btn btn-primary">Visit Store</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
